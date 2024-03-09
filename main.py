@@ -110,8 +110,15 @@ def send_medias(medias: dict, mobile: str, type: str) -> None:
         elif type == "stickers":
             messenger.send_sticker(sticker=link, recipient_id=mobile)
         elif type == "documents":
-            messenger.send_document(
-                document=link, recipient_id=mobile, caption=caption)
+            filename=link.split("/")[-1]
+            if "sarufi-media" in link:
+                filename_parts = filename.split('.')
+                extension = filename_parts[-1]
+                name=''.join(filename_parts[:-1])
+                if len(name)>11 and name[-11] == '-':
+                    name = name[:-11]
+                filename = f'{name}.{extension}'      
+            messenger.send_document(document=link,recipient_id=mobile,caption=caption, filename=filename)
         else:
             logging.error("Unrecognized type")
 
